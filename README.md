@@ -30,5 +30,5 @@ Ultimate Modular Platform with Infinite Plugin System
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/yourusername/nexuscore.git
+git clone https://github.com/Xdetective9/nexuscore.git
 cd nexuscore
