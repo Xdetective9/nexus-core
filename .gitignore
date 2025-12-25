@@ -1,0 +1,90 @@
+# Dependencies
+node_modules/
+.npm
+.pnpm
+.yarn/cache
+.yarn/install-state.gz
+.pnp.*
+
+# Environment
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage
+coverage/
+.nyc_output
+
+# Build outputs
+dist/
+build/
+.out/
+.next/
+.nuxt/
+
+# Uploads
+uploads/
+tmp/
+temp/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+database.sqlite
+
+# Sessions
+whatsapp-sessions/
+telegram-sessions/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary
+*.tmp
+*.temp
+
+# SSL
+ssl/
+*.pem
+*.key
+*.crt
+
+# Backup
+*.bak
+*.backup
+
+# Render
+.render/
