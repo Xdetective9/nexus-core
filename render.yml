@@ -1,0 +1,101 @@
+services:
+  - type: web
+    name: nexuscore
+    env: node
+    region: singapore
+    plan: free
+    branch: main
+    healthCheckPath: /health
+    autoDeploy: true
+    
+    buildCommand: |
+      npm install
+      npm run migrate
+      
+    startCommand: npm start
+    
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: NODE_VERSION
+        value: 20.x
+      - key: DATABASE_URL
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: OWNER_NAME
+        value: Abdullah
+      - key: OWNER_NUMBER
+        value: "+923288055104"
+    
+    disk:
+      name: uploads
+      mountPath: /opt/render/project/src/uploads
+      sizeGB: 1
+    
+    scaling:
+      minInstances: 1
+      maxInstances: 1
+      targetMemoryPercent: 70
+      targetCPUPercent: 70
+    
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: X-XSS-Protection
+        value: 1; mode=block
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+      - path: /*
+        name: Permissions-Policy
+        value: "camera=(), microphone=(), geolocation=()"
+      - path: /uploads/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+      - path: /*
+        name: Cache-Control
+        value: public, max-age=3600
+
+databases:
+  - name: nexuscore-db
+    databaseName: nexuscore
+    plan: free
+    ipAllowList: []
+    postgresMajorVersion: "15"
+    
+    # Environment variables will be automatically set
+    # DATABASE_URL: postgresql://user:pass@host:port/db
+
+crons:
+  - name: cleanup-sessions
+    schedule: "0 3 * * *"  # Daily at 3 AM
+    command: "node scripts/cleanup.js"
+    
+  - name: backup-database
+    schedule: "0 4 * * 0"  # Weekly on Sunday at 4 AM
+    command: "node scripts/backup.js"
+
+# Static Site (optional)
+# - type: static
+#   name: nexuscore-static
+#   buildCommand: npm run build
+#   publishPath: ./dist
+#   routes:
+#     - type: rewrite
+#       source: /*
+#       destination: /index.html
