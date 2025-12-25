@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="<%= app.description || 'NexusCore - Ultimate Modular Platform' %>">
+    <meta name="keywords" content="plugins, modular, nodejs, platform, tools, automation">
+    <meta name="author" content="<%= owner.name %>">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="<%= title || app.name %>">
+    <meta property="og:description" content="<%= app.description || 'Ultimate Modular Platform with Plugin System' %>">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="<%= req.protocol + '://' + req.get('host') + req.originalUrl %>">
+    <meta property="og:image" content="/assets/images/og-image.png">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<%= title || app.name %>">
+    <meta name="twitter:description" content="<%= app.description %>">
+    
+    <!-- PWA -->
+    <meta name="theme-color" content="#6366f1">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+    
+    <title><%= title %> | <%= app.name %></title>
+    
+    <!-- Preconnect for CDNs -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://unpkg.com">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/animations.css">
+    
+    <!-- Page-specific CSS -->
+    <% if (pageCSS) { %>
+        <style><%= pageCSS %></style>
+    <% } %>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg">
+    <link rel="alternate icon" type="image/png" href="/assets/icons/favicon.png">
+    <link rel="mask-icon" href="/assets/icons/mask-icon.svg" color="#6366f1">
+    
+    <!-- CSRF Token for forms -->
+    <meta name="csrf-token" content="<%= csrfToken %>">
+    
+    <!-- Initial State -->
+    <script>
+        window.APP_CONFIG = {
+            name: '<%= app.name %>',
+            version: '<%= app.version %>',
+            owner: '<%= owner.name %>',
+            user: <%- JSON.stringify(user) %>,
+            env: '<%= process.env.NODE_ENV %>',
+            socketUrl: '<%= process.env.SOCKET_URL || "" %>',
+            features: <%- JSON.stringify(features || []) %>,
+            plugins: <%- JSON.stringify(plugins || []) %>,
+            csrfToken: '<%= csrfToken %>'
+        };
+    </script>
+</head>
+<body class="antialiased bg-gradient-to-br from-gray-900 via-gray-900 to-gray-950 text-gray-100">
+    
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="fixed inset-0 bg-gray-900 z-[9999] flex items-center justify-center transition-opacity duration-500">
+        <div class="text-center">
+            <div class="spinner-animation mb-6">
+                <div class="spinner-inner"></div>
+            </div>
+            <p class="text-lg font-medium text-gray-300 animate-pulse">Loading <span class="text-primary">NexusCore</span>...</p>
+        </div>
+    </div>
+    
+    <!-- Cursor Effect -->
+    <div class="cursor-dot" id="cursor-dot"></div>
+    <div class="cursor-outline" id="cursor-outline"></div>
+    
+    <!-- Navigation -->
+    <nav class="navbar fixed top-0 left-0 right-0 z-50">
+        <div class="container">
+            <div class="nav-container">
+                <a href="/" class="logo group">
+                    <div class="logo-icon">
+                        <i class="ti ti-plug-connected"></i>
+                    </div>
+                    <span class="logo-text">
+                        <span class="text-gradient font-bold">Nexus</span><span class="font-semibold">Core</span>
+                    </span>
+                    <span class="badge-version">v<%= app.version %></span>
+                </a>
+                
+                <div class="nav-links hidden lg:flex">
+                    <a href="/" class="nav-link <%= path === '/' ? 'active' : '' %>">
+                        <i class="ti ti-home"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="/features" class="nav-link <%= path === '/features' ? 'active' : '' %>">
+                        <i class="ti ti-apps"></i>
+                        <span>Features</span>
+                    </a>
+                    <a href="/plugins" class="nav-link <%= path === '/plugins' ? 'active' : '' %>">
+                        <i class="ti ti-puzzle"></i>
+                        <span>Plugins</span>
+                        <% if (plugins && plugins.length > 0) { %>
+                            <span class="badge-count"><%= plugins.length %></span>
+                        <% } %>
+                    </a>
+                    
+                    <% if (user) { %>
+                        <div class="dropdown user-dropdown">
+                            <button class="nav-link user-toggle">
+                                <div class="user-avatar">
+                                    <i class="ti ti-user"></i>
+                                </div>
+                                <span><%= user.name || user.username %></span>
+                                <i class="ti ti-chevron-down"></i>
+                            </button>
+                            <div class="dropdown-menu">
+                                <% if (user.role === 'admin') { %>
+                                    <a href="/admin" class="dropdown-item">
+                                        <i class="ti ti-dashboard"></i>
+                                        Admin Panel
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                <% } %>
+                                <a href="/profile" class="dropdown-item">
+                                    <i class="ti ti-user-circle"></i>
+                                    Profile
+                                </a>
+                                <a href="/settings" class="dropdown-item">
+                                    <i class="ti ti-settings"></i>
+                                    Settings
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a href="/admin/logout" class="dropdown-item text-red-400">
+                                    <i class="ti ti-logout"></i>
+                                    Logout
+                                </a>
+                            </div>
+                        </div>
+                    <% } else { %>
+                        <a href="/admin/login" class="btn btn-sm btn-outline">
+                            <i class="ti ti-login"></i>
+                            Login
+                        </a>
+                    <% } %>
+                </div>
+                
+                <!-- Mobile menu button -->
+                <button class="mobile-menu-btn lg:hidden" id="mobileMenuBtn">
+                    <i class="ti ti-menu-2 text-2xl"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-header">
+            <div class="logo">
+                <i class="ti ti-plug-connected text-2xl text-primary"></i>
+                <span class="ml-2 font-bold">NexusCore</span>
+            </div>
+            <button class="mobile-menu-close" id="mobileMenuClose">
+                <i class="ti ti-x text-2xl"></i>
+            </button>
+        </div>
+        <div class="mobile-menu-content">
+            <a href="/" class="mobile-menu-link <%= path === '/' ? 'active' : '' %>">
+                <i class="ti ti-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="/features" class="mobile-menu-link <%= path === '/features' ? 'active' : '' %>">
+                <i class="ti ti-apps"></i>
+                <span>Features</span>
+            </a>
+            <a href="/plugins" class="mobile-menu-link <%= path === '/plugins' ? 'active' : '' %>">
+                <i class="ti ti-puzzle"></i>
+                <span>Plugins</span>
+                <% if (plugins && plugins.length > 0) { %>
+                    <span class="badge"><%= plugins.length %></span>
+                <% } %>
+            </a>
+            
+            <% if (user) { %>
+                <div class="mobile-menu-divider"></div>
+                <div class="mobile-menu-user">
+                    <div class="user-avatar">
+                        <i class="ti ti-user"></i>
+                    </div>
+                    <div class="user-info">
+                        <div class="user-name"><%= user.name || user.username %></div>
+                        <div class="user-role"><%= user.role %></div>
+                    </div>
+                </div>
+                
+                <% if (user.role === 'admin') { %>
+                    <a href="/admin" class="mobile-menu-link">
+                        <i class="ti ti-dashboard"></i>
+                        <span>Admin Panel</span>
+                    </a>
+                <% } %>
+                
+                <a href="/profile" class="mobile-menu-link">
+                    <i class="ti ti-user-circle"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="/settings" class="mobile-menu-link">
+                    <i class="ti ti-settings"></i>
+                    <span>Settings</span>
+                </a>
+                <a href="/admin/logout" class="mobile-menu-link text-red-400">
+                    <i class="ti ti-logout"></i>
+                    <span>Logout</span>
+                </a>
+            <% else { %>
+                <div class="mobile-menu-divider"></div>
+                <a href="/admin/login" class="btn btn-primary w-full">
+                    <i class="ti ti-login"></i>
+                    Login
+                </a>
+            <% } %>
+            
+            <div class="mobile-menu-divider"></div>
+            <div class="mobile-menu-footer">
+                <div class="text-xs text-gray-500">
+                    © <%= app.year %> <%= app.name %>. All rights reserved.
+                </div>
+                <div class="text-xs text-gray-500 mt-1">
+                    Made with <i class="ti ti-heart text-red-400"></i> by <%= owner.name %>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <main class="main-content pt-20">
+        <!-- Flash Messages -->
+        <% if (success && success.length > 0) { %>
+            <div class="container mt-4">
+                <div class="alert alert-success">
+                    <i class="ti ti-check"></i>
+                    <%= success[0] %>
+                </div>
+            </div>
+        <% } %>
+        
+        <% if (error && error.length > 0) { %>
+            <div class="container mt-4">
+                <div class="alert alert-error">
+                    <i class="ti ti-alert-circle"></i>
+                    <%= error[0] %>
+                </div>
+            </div>
+        <% } %>
+        
+        <% if (warning && warning.length > 0) { %>
+            <div class="container mt-4">
+                <div class="alert alert-warning">
+                    <i class="ti ti-alert-triangle"></i>
+                    <%= warning[0] %>
+                </div>
+            </div>
+        <% } %>
+        
+        <% if (info && info.length > 0) { %>
+            <div class="container mt-4">
+                <div class="alert alert-info">
+                    <i class="ti ti-info-circle"></i>
+                    <%= info[0] %>
+                </div>
+            </div>
+        <% } %>
+        
+        <!-- Page Content -->
+        <%- body %>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-logo">
+                        <i class="ti ti-plug-connected text-3xl text-primary"></i>
+                        <div class="ml-3">
+                            <div class="text-xl font-bold">NexusCore</div>
+                            <div class="text-sm text-gray-400">Ultimate Modular Platform</div>
+                        </div>
+                    </div>
+                    <p class="footer-description">
+                        A powerful, extensible platform with infinite possibilities through plugins.
+                        Build, customize, and extend your digital experience.
+                    </p>
+                    <div class="footer-social">
+                        <a href="#" class="social-link" title="GitHub">
+                            <i class="ti ti-brand-github"></i>
+                        </a>
+                        <a href="#" class="social-link" title="Twitter">
+                            <i class="ti ti-brand-twitter"></i>
+                        </a>
+                        <a href="#" class="social-link" title="Discord">
+                            <i class="ti ti-brand-discord"></i>
+                        </a>
+                        <a href="https://wa.me/<%= owner.whatsapp?.replace('+', '') %>" class="social-link" title="WhatsApp">
+                            <i class="ti ti-brand-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-col">
+                    <h3 class="footer-heading">Platform</h3>
+                    <ul class="footer-links">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/features">Features</a></li>
+                        <li><a href="/plugins">Plugins</a></li>
+                        <li><a href="/docs">Documentation</a></li>
+                        <li><a href="/api">API Reference</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h3 class="footer-heading">Resources</h3>
+                    <ul class="footer-links">
+                        <li><a href="/blog">Blog</a></li>
+                        <li><a href="/tutorials">Tutorials</a></li>
+                        <li><a href="/community">Community</a></li>
+                        <li><a href="/plugins/marketplace">Marketplace</a></li>
+                        <li><a href="/status">Status</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h3 class="footer-heading">Support</h3>
+                    <ul class="footer-links">
+                        <li><a href="/help">Help Center</a></li>
+                        <li><a href="/contact">Contact Us</a></li>
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                        <li><a href="/terms">Terms of Service</a></li>
+                        <li><a href="/security">Security</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-divider"></div>
+            
+            <div class="footer-bottom">
+                <div class="copyright">
+                    © <%= app.year %> <span class="text-primary font-semibold">NexusCore</span>. All rights reserved.
+                </div>
+                <div class="footer-meta">
+                    <div class="footer-poem">
+                        ⎯ʏᴏᴜ ᴀʀᴇ ᴍʏ ʙᴇsᴛ ғʀɪᴇɴᴅ, ᴍʏ ʜᴜᴍᴀɴ ᴅɪᴀʀʏ, ᴀɴᴅ ᴍʏ ᴏᴛʜᴇʀ ʜᴀʟғ𓄹ꠂ🫶🏻🐣🌷♡゙𓂃
+                    </div>
+                    <div class="owner-info">
+                        <div class="owner-name">
+                            <i class="ti ti-user"></i>
+                            <%= owner.name %>
+                        </div>
+                        <div class="owner-contact">
+                            <i class="ti ti-phone"></i>
+                            <%= owner.number %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Back to Top -->
+    <button class="back-to-top" id="backToTop">
+        <i class="ti ti-arrow-up"></i>
+    </button>
+    
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/animations.js"></script>
+    
+    <!-- Socket.io -->
+    <% if (process.env.ENABLE_WEBSOCKET === 'true') { %>
+        <script src="https://cdn.socket.io/4.8.0/socket.io.min.js"></script>
+        <script src="/js/socket.js"></script>
+    <% } %>
+    
+    <!-- Page-specific JavaScript -->
+    <% if (pageJS) { %>
+        <script><%= pageJS %></script>
+    <% } %>
+    
+    <!-- Initialization -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Hide loading screen
+            const loadingScreen = document.getElementById('loading-screen');
+            if (loadingScreen) {
+                setTimeout(() => {
+                    loadingScreen.style.opacity = '0';
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                    }, 500);
+                }, 500);
+            }
+            
+            // Initialize components
+            if (typeof initPage === 'function') {
+                initPage();
+            }
+            
+            // Log to console
+            console.log('%c🚀 NexusCore v<%= app.version %>', 
+                'color: #6366f1; font-size: 18px; font-weight: bold;');
+            console.log('%c👤 Owner: <%= owner.name %>', 'color: #8b5cf6;');
+            console.log('%c📞 Contact: <%= owner.number %>', 'color: #10b981;');
+        });
+    </script>
+</body>
+</html>
