@@ -60,7 +60,6 @@
     "form-data": "4.0.0",
     "ytdl-core": "4.11.5",
     "instagram-url-direct": "2.0.0",
-    "tiktok-video-downloader": "1.0.9",
     "puppeteer": "23.1.0",
     "cheerio": "1.0.0",
     "rate-limiter-flexible": "5.0.4",
