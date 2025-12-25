@@ -1,0 +1,424 @@
+<% 
+    pageCSS = `
+    .hero-gradient {
+        background: linear-gradient(135deg, 
+            rgba(99, 102, 241, 0.1) 0%, 
+            rgba(139, 92, 246, 0.05) 50%, 
+            rgba(16, 185, 129, 0.03) 100%
+        );
+    }
+    
+    .feature-icon {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .feature-card:hover .feature-icon {
+        transform: scale(1.1) rotate(5deg);
+    }
+    
+    .particles-js {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: -1;
+    }
+    
+    .glowing-border {
+        position: relative;
+    }
+    
+    .glowing-border::before {
+        content: '';
+        position: absolute;
+        inset: -2px;
+        background: linear-gradient(45deg, 
+            #6366f1, #8b5cf6, #10b981, #0ea5e9, #f59e0b
+        );
+        border-radius: inherit;
+        z-index: -1;
+        animation: glow 3s linear infinite;
+        background-size: 400%;
+        filter: blur(10px);
+        opacity: 0.5;
+    }
+    
+    @keyframes glow {
+        0% { background-position: 0 0; }
+        50% { background-position: 400% 0; }
+        100% { background-position: 0 0; }
+    }
+    `;
+%>
+
+<div class="relative overflow-hidden">
+    <!-- Particles Background -->
+    <div id="particles-js" class="particles-js"></div>
+    
+    <!-- Hero Section -->
+    <section class="hero-section relative py-20 lg:py-32">
+        <div class="container">
+            <div class="max-w-4xl mx-auto text-center">
+                <!-- Animated Badge -->
+                <div class="inline-flex items-center gap-2 mb-8 px-4 py-2 bg-primary/10 border border-primary/20 rounded-full animate-float">
+                    <span class="w-2 h-2 bg-primary rounded-full animate-pulse"></span>
+                    <span class="text-sm font-medium text-primary">v<%= app.version %> LIVE</span>
+                </div>
+                
+                <!-- Main Heading -->
+                <h1 class="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight">
+                    <span class="text-gradient block">Unleash</span>
+                    <span class="text-white">Infinite</span>
+                    <span class="text-gradient">Possibilities</span>
+                </h1>
+                
+                <!-- Tagline -->
+                <p class="text-xl md:text-2xl text-gray-300 mb-10 max-w-3xl mx-auto leading-relaxed">
+                    The world's most powerful modular platform. 
+                    <span class="text-primary font-semibold">Add, remove, or customize</span> 
+                    any feature with our revolutionary plugin system.
+                </p>
+                
+                <!-- CTA Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+                    <a href="/plugins" class="btn btn-primary btn-lg group">
+                        <span>Explore Plugins</span>
+                        <i class="ti ti-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                    <a href="/features" class="btn btn-outline btn-lg">
+                        <i class="ti ti-play-circle"></i>
+                        <span>Watch Demo</span>
+                    </a>
+                </div>
+                
+                <!-- Stats -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl mx-auto">
+                    <div class="stat-card glowing-border">
+                        <div class="stat-value text-3xl font-bold text-primary">
+                            <%= plugins?.length || 0 %>+
+                        </div>
+                        <div class="stat-label">Plugins</div>
+                    </div>
+                    <div class="stat-card glowing-border">
+                        <div class="stat-value text-3xl font-bold text-secondary">
+                            99.9%
+                        </div>
+                        <div class="stat-label">Uptime</div>
+                    </div>
+                    <div class="stat-card glowing-border">
+                        <div class="stat-value text-3xl font-bold text-accent">
+                            <%= features?.length || 0 %>+
+                        </div>
+                        <div class="stat-label">Features</div>
+                    </div>
+                    <div class="stat-card glowing-border">
+                        <div class="stat-value text-3xl font-bold text-info">
+                            24/7
+                        </div>
+                        <div class="stat-label">Support</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Floating Elements -->
+        <div class="absolute top-1/4 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-1/4 right-10 w-96 h-96 bg-secondary/5 rounded-full blur-3xl"></div>
+    </section>
+    
+    <!-- Features Section -->
+    <section class="py-20 bg-gray-900/50">
+        <div class="container">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                    Why <span class="text-gradient">NexusCore</span>?
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    A platform built for developers, by developers. 
+                    Unlimited extensibility with zero compromises.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="feature-card group">
+                    <div class="feature-icon mb-6 text-primary">
+                        <i class="ti ti-puzzle text-5xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Modular Architecture</h3>
+                    <p class="text-gray-300 mb-4">
+                        Build your perfect setup with our plugin system. 
+                        Add or remove features without touching the core code.
+                    </p>
+                    <ul class="space-y-2 mb-6">
+                        <li class="flex items-center gap-2">
+                            <i class="ti ti-check text-accent"></i>
+                            <span>Unlimited plugins</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="ti ti-check text-accent"></i>
+                            <span>Hot reloading</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <i class="ti ti-check text-accent"></i>
+                            <span>Zero downtime updates</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="feature-card group">
+                    <div class="feature-icon mb-6 text-secondary">
+                        <i class="ti ti-rocket text-5xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Blazing Fast</h3>
+                    <p class="text-gray-300 mb-4">
+                        Optimized for performance with caching, compression, 
+                        and efficient database queries. Handle millions of requests with ease.
+                    </p>
+                    <div class="progress-container mb-4">
+                        <div class="progress-bar" style="width: 95%"></div>
+                    </div>
+                    <div class="flex justify-between text-sm text-gray-400">
+                        <span>Performance Score</span>
+                        <span class="font-semibold text-accent">95%</span>
+                    </div>
+                </div>
+                
+                <!-- Feature 3 -->
+                <div class="feature-card group">
+                    <div class="feature-icon mb-6 text-accent">
+                        <i class="ti ti-shield-lock text-5xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Enterprise Security</h3>
+                    <p class="text-gray-300 mb-4">
+                        Military-grade security with end-to-end encryption, 
+                        rate limiting, and advanced threat protection.
+                    </p>
+                    <div class="security-badges flex gap-2 flex-wrap">
+                        <span class="badge badge-success">HTTPS</span>
+                        <span class="badge badge-success">CSRF</span>
+                        <span class="badge badge-success">SQLi</span>
+                        <span class="badge badge-success">XSS</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Plugins Showcase -->
+    <section class="py-20">
+        <div class="container">
+            <div class="flex flex-col lg:flex-row items-center justify-between gap-8 mb-12">
+                <div>
+                    <h2 class="text-4xl md:text-5xl font-bold mb-4">
+                        Featured <span class="text-gradient">Plugins</span>
+                    </h2>
+                    <p class="text-xl text-gray-300 max-w-2xl">
+                        Discover powerful plugins that extend NexusCore's capabilities. 
+                        From AI assistants to automation tools.
+                    </p>
+                </div>
+                <a href="/plugins" class="btn btn-outline btn-lg">
+                    <span>View All Plugins</span>
+                    <i class="ti ti-arrow-right"></i>
+                </a>
+            </div>
+            
+            <!-- Plugins Slider -->
+            <div class="plugins-slider splide">
+                <div class="splide__track">
+                    <div class="splide__list">
+                        <% 
+                            const featuredPlugins = plugins?.slice(0, 6) || [];
+                            for (const plugin of featuredPlugins) { 
+                        %>
+                        <div class="splide__slide">
+                            <div class="plugin-showcase-card">
+                                <div class="plugin-icon-lg" style="background: var(--<%= plugin.iconColor || 'primary' %>-bg)">
+                                    <i class="ti ti-<%= plugin.icon || 'box' %>"></i>
+                                </div>
+                                <div class="plugin-content">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <h3 class="text-xl font-bold"><%= plugin.name %></h3>
+                                        <span class="badge-version">v<%= plugin.version %></span>
+                                    </div>
+                                    <p class="text-gray-300 mb-4 line-clamp-2">
+                                        <%= plugin.description %>
+                                    </p>
+                                    <div class="flex items-center justify-between">
+                                        <span class="badge-category">
+                                            <%= plugin.category %>
+                                        </span>
+                                        <a href="<%= plugin.route %>" class="btn btn-sm btn-primary">
+                                            Try Now
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="py-20 hero-gradient">
+        <div class="container">
+            <div class="max-w-4xl mx-auto text-center">
+                <div class="inline-block p-1 bg-gradient-to-r from-primary to-secondary rounded-2xl mb-8">
+                    <div class="bg-gray-900 rounded-xl px-8 py-2">
+                        <span class="text-lg font-semibold text-gradient">
+                            🚀 Ready to Transform Your Workflow?
+                        </span>
+                    </div>
+                </div>
+                
+                <h2 class="text-4xl md:text-6xl font-bold mb-6">
+                    Start Building with
+                    <span class="text-gradient">NexusCore</span>
+                </h2>
+                
+                <p class="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
+                    Join thousands of developers who are building amazing things with our platform.
+                    No credit card required. Start free forever.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="/admin/login" class="btn btn-primary btn-lg btn-glow">
+                        <i class="ti ti-rocket"></i>
+                        <span>Get Started Free</span>
+                    </a>
+                    <a href="/contact" class="btn btn-outline btn-lg">
+                        <i class="ti ti-message-circle"></i>
+                        <span>Contact Sales</span>
+                    </a>
+                </div>
+                
+                <!-- Trust Badges -->
+                <div class="mt-16 pt-8 border-t border-gray-800">
+                    <p class="text-gray-400 mb-6">Trusted by developers worldwide</p>
+                    <div class="flex flex-wrap justify-center gap-8 opacity-70">
+                        <div class="trust-badge">
+                            <i class="ti ti-brand-nodejs text-3xl"></i>
+                            <span class="text-sm">Node.js</span>
+                        </div>
+                        <div class="trust-badge">
+                            <i class="ti ti-brand-docker text-3xl"></i>
+                            <span class="text-sm">Docker</span>
+                        </div>
+                        <div class="trust-badge">
+                            <i class="ti ti-brand-git text-3xl"></i>
+                            <span class="text-sm">Git</span>
+                        </div>
+                        <div class="trust-badge">
+                            <i class="ti ti-brand-postgresql text-3xl"></i>
+                            <span class="text-sm">PostgreSQL</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<% 
+    pageJS = `
+    // Initialize particles
+    if (typeof particlesJS !== 'undefined') {
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 80, density: { enable: true, value_area: 800 } },
+                color: { value: "#6366f1" },
+                shape: { type: "circle" },
+                opacity: { value: 0.5, random: true },
+                size: { value: 3, random: true },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: "#8b5cf6",
+                    opacity: 0.2,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 2,
+                    direction: "none",
+                    random: true,
+                    straight: false,
+                    out_mode: "out",
+                    bounce: false
+                }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: {
+                    onhover: { enable: true, mode: "repulse" },
+                    onclick: { enable: true, mode: "push" }
+                }
+            }
+        });
+    }
+    
+    // Initialize slider
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof Splide !== 'undefined') {
+            new Splide('.plugins-slider', {
+                type: 'loop',
+                perPage: 3,
+                perMove: 1,
+                gap: '2rem',
+                pagination: false,
+                breakpoints: {
+                    1024: { perPage: 2 },
+                    768: { perPage: 1 }
+                }
+            }).mount();
+        }
+        
+        // Animate stats
+        const stats = document.querySelectorAll('.stat-value');
+        stats.forEach(stat => {
+            const finalValue = parseInt(stat.textContent);
+            let current = 0;
+            const increment = finalValue / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= finalValue) {
+                    stat.textContent = finalValue + (stat.textContent.includes('+') ? '+' : '');
+                    clearInterval(timer);
+                } else {
+                    stat.textContent = Math.floor(current) + (stat.textContent.includes('+') ? '+' : '');
+                }
+            }, 30);
+        });
+    });
+    
+    // Cursor effect
+    const cursorDot = document.getElementById('cursor-dot');
+    const cursorOutline = document.getElementById('cursor-outline');
+    
+    if (cursorDot && cursorOutline) {
+        document.addEventListener('mousemove', (e) => {
+            cursorDot.style.left = e.pageX + 'px';
+            cursorDot.style.top = e.pageY + 'px';
+            
+            cursorOutline.style.left = e.pageX + 'px';
+            cursorOutline.style.top = e.pageY + 'px';
+        });
+        
+        document.addEventListener('mousedown', () => {
+            cursorDot.style.transform = 'scale(0.5)';
+            cursorOutline.style.transform = 'scale(1.5)';
+        });
+        
+        document.addEventListener('mouseup', () => {
+            cursorDot.style.transform = 'scale(1)';
+            cursorOutline.style.transform = 'scale(1)';
+        });
+    }
+    `;
+%>
