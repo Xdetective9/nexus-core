@@ -2,7 +2,7 @@ import { Sequelize } from 'sequelize';
 import pg from 'pg';
 import chalk from 'chalk';
 import logger from '../utils/logger.js';
-import { config } from '../../config/database.config.js';
+import { config } from '../../../config/database.config.js';
 
 const { Pool } = pg;
 
